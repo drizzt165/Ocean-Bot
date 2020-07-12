@@ -17,7 +17,27 @@ class General(commands.Cog):
             ctx ([type]): [description]
         """
         guild = ctx.author.guild
-        await ctx.send(f"```User Count: {guild.member_count}```")
+        totalMembers = guild.member_count
+        onlineMembers = 0
+        offlineMembers = 0
+        idleMembers = 0
+        dndMembers = 0
+        for mem in guild.members:
+            memStatus = mem.status
+            if memStatus == discord.Status.online:
+                onlineMembers+=1
+            elif memStatus == discord.Status.offline:
+                offlineMembers+=1
+            elif memStatus == discord.Status.idle:
+                idleMembers += 1
+            elif memStatus == discord.Status.dnd:
+                dndMembers += 1
+            
+        await ctx.send(f"```User Count: {totalMembers}\n"\
+                       f"Online: {onlineMembers}\n"\
+                       f"Offline: {offlineMembers}\n"\
+                       f"Idle: {idleMembers}\n"\
+                       f"DND: {dndMembers}```\n")
 
     @commands.command(name='oceanman',
                        pass_context=True,
