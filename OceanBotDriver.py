@@ -8,11 +8,10 @@ import asyncio
 def read_token():
     with open("settings/tokens.json") as tok:
         return json.load(tok)
-tokens = read_token()
 
 class Client(commands.Bot):
-    def __init__(self,command_prefix):
-        super().__init__(command_prefix)
+    def __init__(self,command_prefix,help_command):
+        super().__init__(command_prefix, help_command)
     
     def load_cogs(self,client):
         for cog in [file.split('.')[0] for file in os.listdir("cogs") if file.endswith('.py')]:
@@ -20,9 +19,10 @@ class Client(commands.Bot):
                 if cog != "__init__":
                     client.load_extension(f"cogs.{cog}")
             except Exception as e:
-                print(e)
-    
+                print(e)        
+                
     async def on_ready(self):
+        print("Loading cogs...")
         self.load_cogs(self)
         print("Bot is ready!")
         
@@ -33,14 +33,17 @@ class Client(commands.Bot):
             nameList = ['drizzt165']
             if str(after.name) in nameList:
                 print(after.joined_at)
-            
-                
-    #test code
-    async def on_message(self,msg):
-        print(msg.author.mention)
 
+def setupHelpCommand():
+    myHelpCommand = discord.ext.commands.MinimalHelpCommand()
+    return myHelpCommand
+         
+    #test code
+    # async def on_message(self,msg):
+    #     print(msg.author.mention)
 
 if __name__ == "__main__":
-    #client = discord.Client()
-    client = Client(command_prefix = ['!'])
+    tokens = read_token()
+    client = Client(command_prefix = ['!'],
+                    help_command = setupHelpCommand())
     client.run(tokens['TOKEN'])
