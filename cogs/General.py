@@ -16,7 +16,8 @@ class General(commands.Cog):
         Args:
             ctx ([type]): [description]
         """
-        await ctx.send(f"```User Count: {len(self.client.users)}```")
+        guild = ctx.author.guild
+        await ctx.send(f"```User Count: {guild.member_count}```")
 
     @commands.command(name='oceanman',
                        pass_context=True,
