@@ -28,6 +28,8 @@ class Client(commands.Bot):
     
     async def on_member_update(self, before, after):
         """Welcome bot developers and admins to bot-channel upon logging in"""
+        if after.guild.id != 102152647489912832: #temp fix to only print in "Ocean Peoples"
+            return
         if before.status == after.status:
             return
         
@@ -38,7 +40,6 @@ class Client(commands.Bot):
                 channel = chan
                 break    
         channelMembers = channel.members
-        
         if before.status == discord.Status.offline and after.status == discord.Status.online:       
             if after in channelMembers:
                 await channel.send(f"Welcome back master {after.mention}")
