@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 
-@has_permissions(administrator = True)
 class Admin(commands.Cog):
     """Admin use commands."""
     def __init__(self,client):
