@@ -7,6 +7,28 @@ class General(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    @commands.command(name = 'user',
+                      pass_context = True,
+                      description = "Output stats of mentioned member.")
+    async def user(self,ctx):
+        """Make bot output user stats.
+
+        Args:
+            ctx ([type]): [description]
+            msg ([type]): [description]
+        """
+        target = ctx.message.mentions[0]
+        joinDiscDate = str(target.created_at).split(' ')[0]
+        joinServDate = str(target.joined_at).split(' ')[0]
+        
+        print(joinDiscDate)
+        output = f"```ID: {target.name}#{target.discriminator}\n"\
+                       f"Nickname: {target.nick}\n"\
+                       f"Joined Discord: {joinDiscDate}\n"\
+                       f"Joined Server: {joinServDate}\n\n"\
+                       f"Current activity: {target.activities}\n```"
+        await ctx.send(output)
+        
     @commands.command(name='usercount',
                        pass_context=True,
                        description="Output amount of users.")
