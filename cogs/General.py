@@ -8,53 +8,73 @@ class General(commands.Cog):
     @commands.command(name = 'help',
                       pass_context = True,
                       description = "Print list of commands.")
-    async def help(self,ctx,*,msg = None):
+    async def help(self,ctx,msg = None):
         embed = discord.Embed(
             colour = discord.Colour.orange()
         )
-        
-        embed.set_author(name = 'Ocean-Bot Commands')
         commands = [command for command in self.client.commands 
                     if command.name != 'help' and
                     command.description and
                     command.name]
+        commandNames = [command.name for command in commands]
         
-        for command in commands:
-            embed.add_field(name = command.name,
-                            value = command.description,
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
+        if not msg:
+            embed.set_author(name = 'Ocean-Bot Commands')
+            for command in enumerate(commands):
+                embed.add_field(name = f"!{command.name}",
+                                value = command.description,
+                                inline = True)                   
+        elif msg in commandNames:
+            commandIndx = commandNames.index(msg)
+            curCommand = commands[commandIndx]
+            
+            embed.add_field(name = f"!{msg}",
+                            value = curCommand.description,
                             inline = False)
-  
-        await ctx.send(embed=embed)        
+            if curCommand.brief:
+                embed.add_field(name = "Example:", value = curCommand.brief)
+            if curCommand.aliases:
+                embed.add_field(name = "Aliases", value = ','.join([al for al in curCommand.aliases]))
+        else:
+            embed.set_author(name = f"Command !{msg} does not exist.")
         
+        await ctx.message.delete()
+        await ctx.send(embed=embed) 
+    
     @commands.command(name = 'user',
                       pass_context = True,
-                      description = "Output stats of mentioned member.")
-    async def user(self,ctx):
-        target = ctx.message.mentions[0]
+                      description = "Output stats of mentioned member.",
+                      brief = "!user @<member>")
+    async def user(self,ctx,msg=None):
+        if msg:
+            target = ctx.message.mentions[0]
+        else:
+            target = ctx.author
         joinDiscDate = str(target.created_at).split(' ')[0]
         joinServDate = str(target.joined_at).split(' ')[0]
-
+        
         embed = discord.Embed()
+        userIcon = discord.File("Images/User.png",filename = "User.png")
         
         embed.set_author(name=f"{target}", 
-                         icon_url= target.avatar_url)
+                         icon_url = "attachment://User.png")
+        embed.set_thumbnail(url = target.avatar_url)
         embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
         embed.add_field(name = 'Joined Discord', value = joinDiscDate,inline = True)
         embed.add_field(name = 'Joined Server', value = joinServDate,inline = True)
         
         await ctx.message.delete()
-        await ctx.send(embed=embed)
+        await ctx.send(file = userIcon, embed=embed)
 
-    @commands.command(name='usercount',
+    @commands.command(name='userstatus',
                        pass_context = True,
                        description = "Output amount of users.")
-    async def usercount(self,ctx):
+    async def userstatus(self,ctx):
         guild = ctx.author.guild
         totalMembers = guild.member_count
-        onlineMembers = 0
-        offlineMembers = 0
-        idleMembers = 0
-        dndMembers = 0
+        onlineMembers = offlineMembers = idleMembers = dndMembers=0
+
         for mem in guild.members:
             memStatus = mem.status
             if memStatus == discord.Status.online:
@@ -65,12 +85,22 @@ class General(commands.Cog):
                 idleMembers += 1
             elif memStatus == discord.Status.dnd:
                 dndMembers += 1
-
-        await ctx.send(f"```User Count: {totalMembers}\n"\
-                       f"Online: {onlineMembers}\n"\
-                       f"Offline: {offlineMembers}\n"\
-                       f"Idle: {idleMembers}\n"\
-                       f"DND: {dndMembers}```\n")
+        
+        embed = discord.Embed(
+            colour = discord.Colour.orange()
+        )
+        titleIcon = discord.File("Images/Community.png",filename = 'Community.png')
+        
+        embed.set_author(name = f"Current member status ({totalMembers})",
+                          icon_url = "attachment://Community.png")
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
+        embed.add_field(name = 'Online:', value = onlineMembers,inline= True)
+        embed.set_image(url="attachment://OnlineIcon.png")
+        embed.add_field(name = 'Offline:', value = offlineMembers,inline = True)
+        embed.add_field(name = 'Idle/DND:', value = idleMembers+dndMembers,inline = True)
+        
+        await ctx.message.delete()
+        await ctx.send(file = titleIcon, embed = embed)
 
     @commands.command(name='oceanman',
                        pass_context = True,
@@ -81,7 +111,8 @@ class General(commands.Cog):
     @commands.command(name = 'say',
                       pass_context = True,
                       description = "Have the bot say something.",
-                      aliases=["announce"])
+                      aliases=["announce"],
+                      brief = "!say <content to echo>")
     async def say(self,ctx,*,msg):
         await ctx.message.delete()
         await ctx.send(msg)
