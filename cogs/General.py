@@ -17,11 +17,11 @@ class General(commands.Cog):
                     command.description and
                     command.name]
         commandNames = [command.name for command in commands]
-        
+            
         embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
         if not msg:
             embed.set_author(name = 'Ocean-Bot Commands')
-            for command in enumerate(commands):
+            for command in commands:
                 embed.add_field(name = f"!{command.name}",
                                 value = command.description,
                                 inline = False)                   
