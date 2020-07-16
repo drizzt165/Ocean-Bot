@@ -1,13 +1,10 @@
 import os
-import json
+import sys
+import dotenv
 import discord
 from discord.ext import commands
 import time
 import asyncio
-
-def read_token():
-    with open("settings/tokens.json") as tok:
-        return json.load(tok)
 
 class Client(commands.Bot):
     def __init__(self,command_prefix,help_command):
@@ -38,8 +35,7 @@ def setupHelpCommand():
     return myHelpCommand
 
 if __name__ == "__main__":
-    tokens = read_token()
     client = Client(command_prefix = ['!'],
                     help_command = setupHelpCommand())
-    client.run(tokens['TOKEN'])
+    client.run(os.getenv('TOKEN'))
 
