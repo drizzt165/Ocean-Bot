@@ -24,7 +24,7 @@ class General(commands.Cog):
             for command in enumerate(commands):
                 embed.add_field(name = f"!{command.name}",
                                 value = command.description,
-                                inline = True)                   
+                                inline = False)                   
         elif msg in commandNames:
             commandIndx = commandNames.index(msg)
             curCommand = commands[commandIndx]
