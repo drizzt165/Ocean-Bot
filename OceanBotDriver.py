@@ -30,12 +30,7 @@ class Client(commands.Bot):
         # always have this in on_message or commands won't work
         await self.process_commands(msg)
 
-def setupHelpCommand():
-    myHelpCommand = discord.ext.commands.MinimalHelpCommand()
-    return myHelpCommand
-
 if __name__ == "__main__":
     client = Client(command_prefix = os.getenv('PREFIX'),
-                    help_command = setupHelpCommand())
+                    help_command = None)
     client.run(os.getenv('TOKEN'))
-

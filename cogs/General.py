@@ -2,18 +2,34 @@ import discord
 from discord.ext import commands
 
 class General(commands.Cog):
-    """General use commands."""
     def __init__(self, client):
         self.client = client
-
+        
+    @commands.command(name = 'help',
+                      pass_context = True,
+                      description = "Print list of commands.")
+    async def help(self,ctx,*,msg = None):
+        embed = discord.Embed(
+            colour = discord.Colour.orange()
+        )
+        
+        embed.set_author(name = 'Ocean-Bot Commands')
+        commands = [command for command in self.client.commands 
+                    if command.name != 'help' and
+                    command.description and
+                    command.name]
+        
+        for command in commands:
+            embed.add_field(name = command.name,
+                            value = command.description,
+                            inline = False)
+  
+        await ctx.send(embed=embed)        
+        
     @commands.command(name = 'user',
                       pass_context = True,
                       description = "Output stats of mentioned member.")
     async def user(self,ctx):
-        """Make bot output user stats.
-        Form:
-        !user @<member>                    
-        """
         target = ctx.message.mentions[0]
         joinDiscDate = str(target.created_at).split(' ')[0]
         joinServDate = str(target.joined_at).split(' ')[0]
@@ -30,10 +46,9 @@ class General(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name='usercount',
-                       pass_context=True,
-                       description="Output amount of users.")
+                       pass_context = True,
+                       description = "Output amount of users.")
     async def usercount(self,ctx):
-        """Output the amount of users in the server."""
         guild = ctx.author.guild
         totalMembers = guild.member_count
         onlineMembers = 0
@@ -58,18 +73,16 @@ class General(commands.Cog):
                        f"DND: {dndMembers}```\n")
 
     @commands.command(name='oceanman',
-                       pass_context=True,
-                       description="Listen to the song of our people.")
+                       pass_context = True,
+                       description = "Listen to the song of our people.")
     async def oceanman(self, ctx):
-        """Listen to the song of our people."""
         await ctx.send(f"{ctx.author.mention} BIG POG! \nhttps://www.youtube.com/watch?v=6E5m_XtCX3c")
 
-    @commands.command(name = 'say', pass_context = True, aliases=["announce"])
+    @commands.command(name = 'say',
+                      pass_context = True,
+                      description = "Have the bot say something.",
+                      aliases=["announce"])
     async def say(self,ctx,*,msg):
-        """Make bot say what you want.
-        Example:
-            !say Hello world!
-        """
         await ctx.message.delete()
         await ctx.send(msg)
 
