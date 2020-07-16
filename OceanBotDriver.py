@@ -35,7 +35,7 @@ def setupHelpCommand():
     return myHelpCommand
 
 if __name__ == "__main__":
-    client = Client(command_prefix = ['!'],
+    client = Client(command_prefix = os.getenv('PREFIX'),
                     help_command = setupHelpCommand())
     client.run(os.getenv('TOKEN'))
 

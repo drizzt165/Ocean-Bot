@@ -3,4 +3,7 @@ Discord bot for my server and as a learning experience in python
 
 
 ### Discord Bot Token
-Change .env file using ".env_sample" as a reference to input bot TOKEN.
+
+Change the name of ".env_sample" to ".env" and fill in your data for each field.
+
+MUST have a bot TOKEN and PREFIX for bot to operate.
