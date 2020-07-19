@@ -55,14 +55,17 @@ class Dictionary(commands.Cog):
         )
         if msg:
             synonyms = self.dic.synonym(term = msg)
-            result = 'Blank'
-            if len(synonyms) < self.AntonymSynonymCount:
-                result = ', '.join(synonyms)
+            if synonyms:
+                result = 'Blank'
+                if len(synonyms) < self.AntonymSynonymCount:
+                    result = ', '.join(synonyms)
+                else:
+                    result = ', '.join(synonyms[0:self.AntonymSynonymCount])
+                embed.add_field(name = f'Synonyms for "{msg}"',
+                                value = result,
+                                inline=True)
             else:
-                result = ', '.join(synonyms[0:self.AntonymSynonymCount])
-            embed.add_field(name = f'Synonyms for "{msg}"',
-                            value = result,
-                            inline=True)
+                embed.set_author(name = f'No synonyms for "{msg}"')
         else:
             embed.add_field(name = 'Command Misuse:',
                             value = f"Please add a word to define after {cmd}.",
@@ -83,14 +86,17 @@ class Dictionary(commands.Cog):
         )
         if msg:
             antonyms = self.dic.antonym(term = msg)
-            result = 'Blank'
-            if len(antonyms) < self.AntonymSynonymCount:
-                result = ', '.join(antonyms)
-            else:
-                result = ', '.join(antonyms[0:self.AntonymSynonymCount])
-            embed.add_field(name = f'Antonyms for "{msg}"',
+            if antonyms:
+                result = 'Blank'
+                if len(antonyms) < self.AntonymSynonymCount:
+                    result = ', '.join(antonyms)
+                else:
+                    result = ', '.join(antonyms[0:self.AntonymSynonymCount])
+                embed.add_field(name = f'Antonyms for "{msg}"',
                             value = result,
                             inline=True)
+            else:
+                embed.set_author(name = f'No antonyms for "{msg}"')
         else:
             embed.add_field(name = 'Command Misuse:',
                             value = f"Please add a word to define after {cmd}.",
