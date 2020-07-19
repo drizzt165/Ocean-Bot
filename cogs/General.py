@@ -14,11 +14,20 @@ class General(commands.Cog):
         embed = discord.Embed(
             colour = self.EmbedColour
         )
+        
+        #Load all valid commands
         commands = [command for command in self.client.commands 
                     if command.name != 'help' and
                     command.description and
                     command.name]
+        #Store command names to iterate over
         commandNames = [command.name for command in commands]
+        
+        #Check for command alises being used
+        for command in commands:
+            if msg in command.aliases:
+                msg = command.name
+                break
             
         embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
         if not msg:
