@@ -1,8 +1,10 @@
+import sys
+import os
 import discord
 from discord.ext import commands
 from PyDictionary import PyDictionary
 import configparser
-
+from customPackages.urbandict import UrbanDic
 
 class Dictionary(commands.Cog):
     def __init__(self,client):
@@ -10,6 +12,7 @@ class Dictionary(commands.Cog):
         self.initConsts()
         self.EmbedColour = discord.Colour.green()
         self.dic = PyDictionary()
+        self.udic = UrbanDic()
         
     def initConsts(self):
         config = configparser.ConfigParser()
@@ -17,6 +20,36 @@ class Dictionary(commands.Cog):
         self.AntonymSynonymCount = int(config['DICTIONARY']['AntonymSynonymCount'])
         self.DictionaryMeaningLimit = int(config['DICTIONARY']['DictionaryMeaningLimit'])
         
+    @commands.command(name = 'udefine',
+                      description = "Define a given word.",
+                      pass_context = True,
+                      brief = "!def <word>",
+                      aliases = ['udef'])
+    async def udefine(self,ctx,msg=None):
+        cmd = ctx.message.content.split()[0]
+        embed = discord.Embed(
+            colour = self.EmbedColour
+        )
+        if msg:
+            wordData = self.udic.define(msg) #Only save top result
+            if wordData:
+                wordData = wordData[0]
+                embed.set_author(name = 'Urban Dictionary:')
+                embed.add_field(name = wordData.word,
+                                value = wordData.meaning,
+                                inline = False)
+                embed.add_field(name = 'Example:',
+                                    value = wordData.example,
+                                    inline = False)
+            else:
+                embed.set_author(name = f'No definition found for \"{msg}\"')      
+        else:
+            embed.add_field(name = 'Command misuse', 
+                            value = f'Please add a word after \"{cmd}\"')
+        
+        await ctx.message.delete()
+        await ctx.send(embed = embed)
+    
     @commands.command(name = 'define',
                       description = "Define a given word.",
                       pass_context = True,
@@ -104,7 +137,6 @@ class Dictionary(commands.Cog):
         
         await ctx.message.delete()
         await ctx.send(embed = embed)
-    
     
 def setup(client):
     print("Setting up Dictionary Cog...")
