@@ -1,16 +1,18 @@
 import discord
 from discord.ext import commands
 
+
 class General(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.EmbedColour = discord.Colour.orange()
         
     @commands.command(name = 'help',
                       pass_context = True,
                       description = "Print list of commands.")
     async def help(self,ctx,msg = None):
         embed = discord.Embed(
-            colour = discord.Colour.orange()
+            colour = self.EmbedColour
         )
         commands = [command for command in self.client.commands 
                     if command.name != 'help' and
@@ -54,7 +56,9 @@ class General(commands.Cog):
         joinDiscDate = str(target.created_at).split(' ')[0]
         joinServDate = str(target.joined_at).split(' ')[0]
         
-        embed = discord.Embed()
+        embed = discord.Embed(
+            colour = self.EmbedColour
+        )
         userIcon = discord.File("Images/User.png",filename = "User.png")
         
         embed.set_author(name=f"{target}", 
@@ -87,7 +91,7 @@ class General(commands.Cog):
                 dndMembers += 1
         
         embed = discord.Embed(
-            colour = discord.Colour.orange()
+            colour = self.EmbedColour
         )
         titleIcon = discord.File("Images/Community.png",filename = 'Community.png')
         
