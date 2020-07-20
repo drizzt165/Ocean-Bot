@@ -31,7 +31,8 @@ class General(commands.Cog):
             
         embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
         if not msg:
-            embed.set_author(name = 'Ocean-Bot Commands')
+            embed.add_field(name = 'Ocean-Bot Commands',
+                            value = '!help <command> to get additional information for specific command.')
             for command in commands:
                 embed.add_field(name = f"!{command.name}",
                                 value = command.description,
