@@ -46,17 +46,5 @@ class UrbanDic:
             wordBlocks.append(WordBlock(words[i],meanings[i],examples[i]))
 
         return wordBlocks
-    
-    def wordHasResults(self,soup):
-        tempSoup = soup
-        termSpaces = tempSoup.find_all(class_ = 'term space')
-        termSpaceTexts = [ts.get_text for ts in termSpaces]
-        
-        checkValue = f"Sorry, we couldn't find: {self.word}"
-        
-        if checkValue in termSpaceTexts:
-            return False
-        else:
-            return True
-        
+            
         

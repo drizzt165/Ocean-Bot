@@ -34,6 +34,7 @@ class Dictionary(commands.Cog):
             wordData = self.udic.define(msg) #Only save top result
             if wordData:
                 wordData = wordData[0]
+                embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
                 embed.set_author(name = 'Urban Dictionary:')
                 embed.add_field(name = wordData.word,
                                 value = wordData.meaning,
@@ -63,6 +64,7 @@ class Dictionary(commands.Cog):
         if msg:
             meaning = self.dic.meaning(term = msg, disable_errors=True)
             if meaning:
+                embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
                 embed.set_author(name = f"Definition for \"{msg}\":")         
                 for k in meaning.keys():
                     for x,m in enumerate(meaning[k]):
@@ -94,6 +96,7 @@ class Dictionary(commands.Cog):
                     result = ', '.join(synonyms)
                 else:
                     result = ', '.join(synonyms[0:self.AntonymSynonymCount])
+                embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
                 embed.add_field(name = f'Synonyms for "{msg}"',
                                 value = result,
                                 inline=True)
@@ -125,6 +128,7 @@ class Dictionary(commands.Cog):
                     result = ', '.join(antonyms)
                 else:
                     result = ', '.join(antonyms[0:self.AntonymSynonymCount])
+                embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
                 embed.add_field(name = f'Antonyms for "{msg}"',
                             value = result,
                             inline=True)
