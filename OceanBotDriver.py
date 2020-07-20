@@ -21,6 +21,8 @@ class Client(commands.Bot):
     async def on_ready(self):
         print("Loading cogs...")
         self.load_cogs(self)
+        await client.change_presence(status=discord.Status.idle,
+                                  activity=discord.Activity(type=discord.ActivityType.watching, name="for !help"))
         print("Bot is ready!")
                 
     async def on_message(self, msg):
@@ -28,7 +30,7 @@ class Client(commands.Bot):
         if msg.author == self.user:
             return
         # always have this in on_message or commands won't work
-        await self.process_commands(msg)
+        await self.process_commands(msg)    
 
 if __name__ == "__main__":
     client = Client(command_prefix = os.getenv('PREFIX'),
