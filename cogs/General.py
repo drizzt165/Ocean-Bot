@@ -6,7 +6,8 @@ class General(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.EmbedColour = discord.Colour.orange()
-        
+    
+    
     @commands.command(name = 'help',
                       pass_context = True,
                       description = "Print list of commands.")

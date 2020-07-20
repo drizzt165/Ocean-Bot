@@ -30,11 +30,11 @@ class Dictionary(commands.Cog):
         embed = discord.Embed(
             colour = self.EmbedColour
         )
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
         if msg:
             wordData = self.udic.define(msg) #Only save top result
             if wordData:
                 wordData = wordData[0]
-                embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
                 embed.set_author(name = 'Urban Dictionary:')
                 embed.add_field(name = wordData.word,
                                 value = wordData.meaning,
@@ -61,10 +61,10 @@ class Dictionary(commands.Cog):
         embed = discord.Embed(
             colour = discord.Colour.green()
         )
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
         if msg:
             meaning = self.dic.meaning(term = msg, disable_errors=True)
             if meaning:
-                embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
                 embed.set_author(name = f"Definition for \"{msg}\":")         
                 for k in meaning.keys():
                     for x,m in enumerate(meaning[k]):
@@ -88,6 +88,7 @@ class Dictionary(commands.Cog):
         embed = discord.Embed(
             colour = self.EmbedColour
         )
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
         if msg:
             synonyms = self.dic.synonym(term = msg)
             if synonyms:
@@ -96,7 +97,6 @@ class Dictionary(commands.Cog):
                     result = ', '.join(synonyms)
                 else:
                     result = ', '.join(synonyms[0:self.AntonymSynonymCount])
-                embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
                 embed.add_field(name = f'Synonyms for "{msg}"',
                                 value = result,
                                 inline=True)
@@ -120,6 +120,7 @@ class Dictionary(commands.Cog):
         embed = discord.Embed(
             colour = self.EmbedColour
         )
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
         if msg:
             antonyms = self.dic.antonym(term = msg)
             if antonyms:
@@ -128,7 +129,6 @@ class Dictionary(commands.Cog):
                     result = ', '.join(antonyms)
                 else:
                     result = ', '.join(antonyms[0:self.AntonymSynonymCount])
-                embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
                 embed.add_field(name = f'Antonyms for "{msg}"',
                             value = result,
                             inline=True)
