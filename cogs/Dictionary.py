@@ -21,7 +21,7 @@ class Dictionary(commands.Cog):
         self.DictionaryMeaningLimit = int(config['DICTIONARY']['DictionaryMeaningLimit'])
         
     @commands.command(name = 'udefine',
-                      description = "Define a given word.",
+                      description = "Urban Dictionary of a given word.",
                       pass_context = True,
                       brief = "!def <word>",
                       aliases = ['udef'])
