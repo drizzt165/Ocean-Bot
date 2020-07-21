@@ -29,6 +29,7 @@ class Unofficial(commands.Cog):
                 "that you get more experience and loot"
         steamURL = "https://store.steampowered.com/app/761890/Albion_Online/"
         
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
         embed.add_field(name = 'Albion Online:', 
                         value = copyPasta, 
                         inline = False)
