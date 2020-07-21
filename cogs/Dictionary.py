@@ -5,6 +5,7 @@ from discord.ext import commands
 from PyDictionary import PyDictionary
 import configparser
 from customPackages.urbandict import UrbanDic
+from customPackages import utilityFunctions as util
 
 class Dictionary(commands.Cog):
     def __init__(self,client):
@@ -37,7 +38,7 @@ class Dictionary(commands.Cog):
                 wordData = wordData[0]
                 embed.set_author(name = 'Urban Dictionary:')
                 embed.add_field(name = wordData.word,
-                                value = wordData.meaning,
+                                value = util.truncateEmbedValue(wordData.meaning),
                                 inline = False)
                 embed.add_field(name = 'Example:',
                                     value = wordData.example,
