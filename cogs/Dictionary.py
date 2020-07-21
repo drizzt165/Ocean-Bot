@@ -26,7 +26,7 @@ class Dictionary(commands.Cog):
                       pass_context = True,
                       brief = "!def <word>",
                       aliases = ['udef'])
-    async def udefine(self,ctx,msg=None):
+    async def udefine(self,ctx,*,msg=None):
         cmd = ctx.message.content.split()[0]
         embed = discord.Embed(
             colour = self.EmbedColour
@@ -44,7 +44,7 @@ class Dictionary(commands.Cog):
                                     value = wordData.example,
                                     inline = False)
             else:
-                embed.set_author(name = f'No definition found for \"{msg}\"')      
+                embed.set_author(name = f'No definition found for \"{self.udic.word}\"')      
         else:
             embed.add_field(name = 'Command misuse', 
                             value = f'Please add a word after \"{cmd}\"')

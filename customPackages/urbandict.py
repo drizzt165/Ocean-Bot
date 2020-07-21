@@ -18,16 +18,19 @@ class UrbanDic:
         pass
     
     def initNewWord(self,word):
-        self.word = word
-        self.url = f"http://www.urbandictionary.com/define.php?term={self.word}"
+        self.word = ' '.join(word.split())
+        self.url = f"http://www.urbandictionary.com/define.php?term={self.formatSearchTerm(self.word)}"
         page = requests.get(self.url)
         self.soup = BeautifulSoup(page.content, 'html.parser')
-        
+    
+    def formatSearchTerm(self,term):
+        return '%20'.join(term.split())
+
     def define(self,word):
         try:
             self.initNewWord(word)
         except Exception:
-            print(f"Error finding {self.word} on Urban Dictionary")
+            print(f"Error finding '{self.word}' on Urban Dictionary")
             return None
         
         wordBlocks = self.soup.find_all(class_='def-panel')
