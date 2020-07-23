@@ -20,7 +20,29 @@ class Dictionary(commands.Cog):
         config.read('settings.cfg')
         self.AntonymSynonymCount = int(config['DICTIONARY']['AntonymSynonymCount'])
         self.DictionaryMeaningLimit = int(config['DICTIONARY']['DictionaryMeaningLimit'])
+    
+    @commands.command(name = 'ud_wotd',
+                      description = 'Print the word of the day for Urban Dictionary!',
+                      pass_context = True,
+                      brief = "!ud_wotd <noArgs>")
+    async def ud_wotd(self,ctx):
+        embed = discord.Embed(
+            colour = self.EmbedColour
+        )
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
         
+        wotd = self.udic.WOTD()
+        embed.set_author(name = f'Urban Dictionary: {wotd.ribbon}')
+        embed.add_field(name = wotd.word,
+                        value = util.truncateEmbedValue(wotd.meaning), 
+                        inline = False)
+        embed.add_field(name = "Example:",
+                        value = util.truncateEmbedValue(wotd.example), 
+                        inline = False)        
+        
+        await ctx.message.delete()
+        await ctx.send(embed = embed)
+    
     @commands.command(name = 'udefine',
                       description = "Urban Dictionary of a given word.",
                       pass_context = True,
@@ -41,7 +63,7 @@ class Dictionary(commands.Cog):
                                 value = util.truncateEmbedValue(wordData.meaning),
                                 inline = False)
                 embed.add_field(name = 'Example:',
-                                    value = wordData.example,
+                                    value = util.truncateEmbedValue(wordData.example),
                                     inline = False)
             else:
                 embed.set_author(name = f'No definition found for \"{self.udic.word}\"')      
