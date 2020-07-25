@@ -165,12 +165,6 @@ class General(commands.Cog):
         await ctx.message.delete()
         await ctx.send(file = titleIcon, embed = embed)
 
-    @commands.command(name='oceanman',
-                       pass_context = True,
-                       description = "Listen to the song of our people.")
-    async def oceanman(self, ctx):
-        await ctx.send(f"{ctx.author.mention} BIG POG! \nhttps://www.youtube.com/watch?v=6E5m_XtCX3c")
-
     @commands.command(name = 'say',
                       pass_context = True,
                       description = "Have the bot say something.",

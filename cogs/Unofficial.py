@@ -42,6 +42,12 @@ class Unofficial(commands.Cog):
 
         await ctx.message.delete()
         await ctx.send(embed = embed, file = albIcon)
+        
+    @commands.command(name='oceanman',
+                       pass_context = True,
+                       description = "Listen to the song of our people.")
+    async def oceanman(self, ctx):
+        await ctx.send(f"{ctx.author.mention} BIG POG! \nhttps://www.youtube.com/watch?v=6E5m_XtCX3c")
     
 def setup(client):
     print("Setting up Unofficial Cog...")
