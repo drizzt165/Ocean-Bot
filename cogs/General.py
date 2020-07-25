@@ -82,6 +82,7 @@ class General(commands.Cog):
         embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
         embed.add_field(name = 'Joined Discord', value = joinDiscDate,inline = True)
         embed.add_field(name = 'Joined Server', value = joinServDate,inline = True)
+        embed.add_field(name = 'Mention ID: ', value = target.id,inline = False)
         
         await ctx.message.delete()
         await ctx.send(file = userIcon, embed=embed)
