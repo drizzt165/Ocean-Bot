@@ -1,5 +1,8 @@
 import discord
 from discord.ext import commands
+from datetime import datetime
+import customPackages.utilityFunctions as util
+import math
 
 
 class General(commands.Cog):
@@ -7,7 +10,6 @@ class General(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.EmbedColour = discord.Colour.orange()
-    
     
     @commands.command(name = 'help',
                       pass_context = True,
@@ -68,8 +70,13 @@ class General(commands.Cog):
             target = ctx.message.mentions[0]
         else:
             target = ctx.author
-        joinDiscDate = str(target.created_at).split(' ')[0]
-        joinServDate = str(target.joined_at).split(' ')[0]
+            
+        todayDate = datetime.now().date()
+        joinDiscDate = target.created_at.date()
+        joinDiscDiff = util.format_YY_MM_DD((todayDate-joinDiscDate).days)
+        
+        joinServDate = target.joined_at.date()
+        joinServDiff = util.format_YY_MM_DD((todayDate-joinServDate).days)
         
         embed = discord.Embed(
             colour = self.EmbedColour
@@ -80,12 +87,48 @@ class General(commands.Cog):
                          icon_url = "attachment://User.png")
         embed.set_thumbnail(url = target.avatar_url)
         embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
-        embed.add_field(name = 'Joined Discord', value = joinDiscDate,inline = True)
-        embed.add_field(name = 'Joined Server', value = joinServDate,inline = True)
+        embed.add_field(name = 'Joined Discord', value = f"{joinDiscDate}\n{joinDiscDiff}",inline = True)
+        embed.add_field(name = 'Joined Server', value = f"{joinServDate}\n{joinServDiff}",inline = True)
         embed.add_field(name = 'Mention ID: ', value = target.id,inline = False)
         
         await ctx.message.delete()
         await ctx.send(file = userIcon, embed=embed)
+
+    @commands.command(name = 'server',
+                       description = 'Print server info',
+                       pass_context = True)
+    async def server(self,ctx):
+        embed = discord.Embed(colour = self.EmbedColour)
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
+        guild = ctx.message.guild
+        
+        embed.set_author(name = guild.name)
+        embed.set_thumbnail(url = guild.icon_url)
+        embed.add_field(name = ':id: Server ID: ', value = guild.id,inline = True)
+        
+        creationDate = guild.created_at.date()
+        creationTime = guild.created_at.time().strftime("%I:%M %p")
+        days = (datetime.now()-guild.created_at).days
+
+        dateString = f"{creationDate} {creationTime}\n"
+        dateString+=util.format_YY_MM_DD(days)
+        
+        embed.add_field(name = ':calendar: Created on: ', value = dateString)
+        embed.add_field(name = ':crown: Owned by: ', value = guild.owner,inline = True)
+        
+        voiceChanCnt = len(guild.voice_channels)
+        txtChanCnt = len(guild.text_channels)
+        onlineMembers = 0
+        for m in guild.members:
+            if m.status == discord.Status.online:
+                onlineMembers += 1
+                
+        embed.add_field(name = f":speech_balloon: Channels: {voiceChanCnt+txtChanCnt}", value = f"{voiceChanCnt} Voice | {txtChanCnt} Text", inline = True)
+        embed.add_field(name = f":busts_in_silhouette: Members ({guild.member_count}): ", value = f"{onlineMembers} Online",inline = True)
+        embed.add_field(name = f':earth_africa: Region: ', value = guild.region)
+        
+        await ctx.message.delete()
+        await ctx.send(embed = embed)
 
     @commands.command(name='userstatus',
                        pass_context = True,
