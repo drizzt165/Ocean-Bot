@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 class Unofficial(commands.Cog):
+    """Commands used for purposes relating directly to the Ocean Peoples Guild"""
     def __init__(self,client):
         self.client = client
         self.EmbedColour = discord.Colour.dark_gold()

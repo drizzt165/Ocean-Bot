@@ -8,6 +8,7 @@ from customPackages.urbandict import UrbanDic
 from customPackages import utilityFunctions as util
 
 class Dictionary(commands.Cog):
+    """Dictionary commands to expand your knowledge on slang and language in general."""
     def __init__(self,client):
         self.client = client
         self.initConsts()

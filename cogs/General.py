@@ -3,6 +3,7 @@ from discord.ext import commands
 
 
 class General(commands.Cog):
+    """General use commands for available to all users."""
     def __init__(self, client):
         self.client = client
         self.EmbedColour = discord.Colour.orange()
@@ -15,42 +16,45 @@ class General(commands.Cog):
         embed = discord.Embed(
             colour = self.EmbedColour
         )
-        
-        #Load all valid commands
-        commands = [command for command in self.client.commands 
-                    if command.name != 'help' and
-                    command.description and
-                    command.name]
-        #Store command names to iterate over
-        commandNames = [command.name for command in commands]
-        
-        #Check for command alises being used
-        for command in commands:
-            if msg in command.aliases:
-                msg = command.name
-                break
-            
         embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
-        if not msg:
+        
+        
+        cogDict = {}
+        #ensure that all cog keys are capitalized
+        for key,val in self.client.cogs.items():
+            cogDict[key.capitalize()] = val
+        
+        commands = [c for c in self.client.commands if c.name != 'help']
+        commandNames = [c.name for c in commands]
+
+        if not msg: #print default help window
             embed.add_field(name = 'Ocean-Bot Commands',
                             value = '!help <command> to get additional information for specific command.')
-            for command in commands:
-                embed.add_field(name = f"!{command.name}",
-                                value = command.description,
-                                inline = False)                   
-        elif msg in commandNames:
-            commandIndx = commandNames.index(msg)
-            curCommand = commands[commandIndx]
+            for key,cog in cogDict.items():
+                cogCmds = cog.get_commands()
+                if cogCmds:
+                    cmdNames = ', '.join([c.name for c in cogCmds if c.name != 'help'])
+                    embed.add_field(name = key, value = cmdNames,inline = False)
+        elif msg.capitalize() in cogDict.keys(): #Print cog data
+            msgCog = msg.capitalize()
+            embed.set_author(name = f'{msgCog} Commands')
+            embed.add_field(name = 'Description: ', value = cogDict[msgCog].description,inline = False)
             
-            embed.add_field(name = f"!{msg}",
-                            value = curCommand.description,
-                            inline = False)
-            if curCommand.brief:
-                embed.add_field(name = "Example:", value = curCommand.brief)
-            if curCommand.aliases:
-                embed.add_field(name = "Aliases", value = ','.join([al for al in curCommand.aliases]))
+            cogCmds = cogDict[msgCog].get_commands()
+            if cogCmds:
+                embed.add_field(name = 'Commands: ', 
+                                value = ', '.join([c.name for c in cogCmds if c.name != 'help']), 
+                                inline = False)
+            
+        elif msg.lower() in commandNames: #print specific command data
+            msgCmd = commands[commandNames.index(msg.lower())]
+            embed.set_author(name = f'!{msgCmd} Command')
+            if msgCmd.description:
+                embed.add_field(name = 'Description: ', value = msgCmd.description, inline = False)
+            if msgCmd.brief:
+                embed.add_field(name = 'Example: ', value = msgCmd.brief,inline = False)
         else:
-            embed.set_author(name = f"Command !{msg} does not exist.")
+            embed.set_author(name = f'No command or category named "{msg}"')
         
         await ctx.message.delete()
         await ctx.send(embed=embed) 
