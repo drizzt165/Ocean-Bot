@@ -10,7 +10,7 @@ class Unofficial(commands.Cog):
     @commands.command(name = 'albiononline',
                   pass_context = True,
                   description = 'Albion online copy-pasta.',
-                  brief = '!albiononline simply outputs a copy pasta curated by Torpaydo')
+                  brief = '!albiononline simply outputs a copy pasta curated by <@102159759158804480>')
     async def albiononline(self,ctx):
         embed = discord.Embed(
             colour = self.EmbedColour
@@ -37,9 +37,9 @@ class Unofficial(commands.Cog):
                         value = copyPasta, 
                         inline = False)
         embed.add_field(name = 'Start your adventure TODAY!', 
-                        value = steamURL, 
+                        value = f'Join <@102159759158804480> at {steamURL}', 
                         inline = False)
-        
+
         await ctx.message.delete()
         await ctx.send(embed = embed, file = albIcon)
     
