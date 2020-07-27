@@ -1,6 +1,0 @@
-{
-    "python.linting.pylintEnabled": false,
-    "python.linting.enabled": true,
-    "python.pythonPath": "OceanBot_env\\Scripts\\python.exe",
-    "python.linting.banditEnabled": true
-}
