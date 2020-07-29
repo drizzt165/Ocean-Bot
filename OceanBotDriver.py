@@ -34,5 +34,5 @@ class Client(commands.Bot):
 
 if __name__ == "__main__":
     client = Client(command_prefix = os.getenv('PREFIX'),
-                    help_command = None)
+                    help_command=None)
     client.run(os.getenv('TOKEN'))
