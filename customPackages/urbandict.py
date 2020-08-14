@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-#
-# Simple interface to urbandictionary.com
-#
-# Author: Roman Bogorodskiy <bogorodskiy@gmail.com>
-
 import requests
 from bs4 import BeautifulSoup
 
