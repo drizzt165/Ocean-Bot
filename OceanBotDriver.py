@@ -26,9 +26,6 @@ class Client(commands.Bot):
         print("Bot is ready!")
                 
     async def on_message(self, msg):
-        #skip for bot messages
-        if msg.author.bot or msg.author == self.user:
-            return
         # always have this in on_message or commands won't work
         await self.process_commands(msg)    
 
