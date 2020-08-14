@@ -1,6 +1,7 @@
 import math
 
 def truncateEmbedValue(value):
+    """Check that an embed string doesn't exceed discord embed character limit of 1024."""
     extension = '...\n\nMessage exceeds embed limits'
     maxLen = 1024
     if len(value)>maxLen:
@@ -9,6 +10,11 @@ def truncateEmbedValue(value):
         return value
     
 def format_YY_MM_DD(days):
+    """
+    Translate days amount into a string representing
+    'X years, Y months, Z days ago'
+    
+    """
     dateString = ''
     if days > 365:
         years = math.floor(days/365)
