@@ -60,22 +60,6 @@ class General(commands.Cog):
         
         await ctx.message.delete()
         await ctx.send(embed=embed) 
-    
-    @commands.command(name = 'msg_count',
-                       pass_context = True,
-                       description = "Print amount of messages in a channel.")
-    async def msg_count(self,ctx,channel:discord.TextChannel = None):
-        embed = discord.Embed(colour = self.EmbedColour)
-
-        channel = channel or ctx.channel
-        count = 0
-        async for _ in channel.history(limit=None):
-            count += 1
-
-        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
-        embed.add_field(name = f'Message count:', value = f'{count} messages in {channel.mention}')
-        
-        await ctx.send(embed=embed)
 
     @commands.command(name = 'user',
                       pass_context = True,
