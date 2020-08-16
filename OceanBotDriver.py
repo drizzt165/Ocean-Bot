@@ -30,9 +30,16 @@ class Client(commands.Bot):
         print("Bot is ready!")
                 
     async def on_message(self, msg):
+        if msg.author.bot:
+            return
         #increment msg count
+        try:
+            self.dbManager.updateDB(msg)
+        except Exception as e:
+            print("Initializing database first.")
+            self.dbManager.init_table(msg)
+            await self.dbManager.init_rows(msg)
         
-
         # always have this in on_message or commands won't work
         await self.process_commands(msg)    
 

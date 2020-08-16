@@ -40,31 +40,57 @@ class dbManager():
             )
         except mysql.connector.errors.ProgrammingError as e:
             pass #ignore error with table already exists
-        
+    
+    async def countMsgs(self,channel):
+        count = 0
+        async for msg in channel.history(limit = None):
+            if not msg.author.bot:
+                count+=1
+        return count
 
-    def init_rows(self,ctx):
+    async def init_rows(self,ctx):
         guild = ctx.guild
         channels = guild.text_channels
         
         myCursor = self.database.cursor(dictionary = True)
 
+        myCursor.execute(
+        f"SELECT * FROM `{self.msgCountTableName}` "
+        f"WHERE `Server ID` = {guild.id} "
+        )
+        curGuildDict = myCursor.fetchall()
+        chanIDs = [row['Channel ID'] for row in curGuildDict] #slow when we start talking about large amounts of servers
+        
         for chan in channels:
-            try:
+            if str(chan.id) not in chanIDs:
+                msgCount = await self.countMsgs(chan)
                 myCursor.execute(
-                f"SELECT * FROM `{self.msgCountTableName}` "
-                f"WHERE `Server ID` = {guild.id} "
-                )
-            except Exception as e:
-                print(e)
-
-            myCursor.execute(
-                f"INSERT INTO `{self.msgCountTableName}` (`Server Name`, `Server ID`, `Channel Name`, `Channel ID`, `Channel MsgCount`) "
-                f"VALUES ({guild.name}, {guild.id}, {chan.name}, {chan.id}, 5) "
+                    f"INSERT INTO `{self.msgCountTableName}` (`Server Name`, `Server ID`, `Channel Name`, `Channel ID`, `Channel MsgCount`) "
+                    f"VALUES ('{guild.name}', '{guild.id}', '{chan.name}', '{chan.id}', {msgCount}) "
             )
                 
-        #self.database.commit() 
+        self.database.commit() 
 
-    def update_row(self,ctx):
+    def updateDB(self,ctx):
         myCursor = self.database.cursor(dictionary = True)
+        
 
+
+
+        # Increment msg counter in database
+        myCursor.execute(
+            f"SELECT `Channel MsgCount` "
+            f"FROM `{self.msgCountTableName}` "
+            f"WHERE `Server ID` = {ctx.guild.id} "
+                f"AND `Channel ID` = {ctx.channel.id}"
+        )
+        t = myCursor.fetchall()
+
+        currentMsgCount = t[0]['Channel MsgCount']
+        myCursor.execute(
+            f"UPDATE `{self.msgCountTableName}` "
+            f"SET `Channel MsgCount` = {currentMsgCount+1} "
+            f"WHERE `Server ID` = {ctx.guild.id} "
+                f"AND `Channel ID` = {ctx.channel.id} "
+        )
         self.database.commit()
