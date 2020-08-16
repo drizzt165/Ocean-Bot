@@ -28,6 +28,12 @@ class Admin(commands.Cog):
         
         return validUser
 
+    async def countMsgs(self,chan):
+        count = 0
+        async for _ in chan.history(limit=None):
+            count += 1
+        return count
+
     @commands.command(name = 'test',
                       pass_context = True)
     async def test(self,ctx):
@@ -49,12 +55,15 @@ class Admin(commands.Cog):
             tableSet.add(t[0])
 
         if formattedGuildName not in tableSet:
-            myCursor.execute(f'CREATE TABLE {formattedGuildName} (channelName VARCHAR(50), messageCount INTEGER, date VARCHAR(15))')
+            myCursor.execute(f'CREATE TABLE {formattedGuildName} (channelName VARCHAR(50), messageCount INTEGER, dateModified VARCHAR(15))')
+        
+        for chan in guild.text_channels:
+            print(chan)
+            sqlStuff = f"INSERT INTO {formattedGuildName} (channelName, messageCount, dateModified) VALUES (%s, %s, %s)"
+            curChanMsgCount = await self.countMsgs(chan)
+            record = record = (chan.name, curChanMsgCount, datetime.date(datetime.now()))
+            myCursor.execute(sqlStuff, record)
 
-        sqlStuff = f"INSERT INTO {formattedGuildName} (channelName, messageCount, date) VALUES (%s, %s, %s)"
-        record = (ctx.channel.name, 15, datetime.date(datetime.now()))
-
-        myCursor.execute(sqlStuff, record)
         mydb.commit()
 
     @commands.command(name = 'msg_count',
@@ -62,38 +71,16 @@ class Admin(commands.Cog):
                        description = "Print amount of messages in a channel.")
     async def msg_count(self,ctx,channel:discord.TextChannel = None):
         embed = discord.Embed(colour = self.EmbedColour)
-
-        channel = channel or ctx.channel
-        count = 0
-        async for _ in channel.history(limit=None):
-            count += 1
-
         embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
-        embed.add_field(name = f'Message count:', value = f'{count} messages in {channel.mention}')
-
-        await ctx.message.delete()
-        await ctx.send(embed=embed)
+        channel = channel or ctx.channel
 
     @commands.command(name = 'msg_graph',
                       pass_context = True,
                       description = "Print graph of message history.")
     async def msg_graph(self,ctx):
         embed = discord.Embed(colour = self.EmbedColour)
-
-        guild = ctx.guild
-        textChannels = guild.text_channels
-        
-        for c in textChannels:
-            count = 0
-            async for _ in c.history(limit=None):
-                count+=1
-            embed.add_field(name = f'Message count for #{c.name}', value = count, inline = False)
-
         embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
-        
-        await ctx.message.delete()
-        await ctx.send(embed=embed)
-
+    
 def setup(client):
     print("Setting up Admin Cog...")
     client.add_cog(Admin(client))
