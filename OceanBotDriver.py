@@ -5,10 +5,14 @@ import discord
 from discord.ext import commands
 import time
 import asyncio
+from customPackages import dbManager as db
 
 class Client(commands.Bot):
     def __init__(self,command_prefix,help_command):
         super().__init__(command_prefix, help_command)
+
+        #connect to database
+        self.dbManager = db.dbManager(os.getenv('SQLHost'),os.getenv('SQLUser'),os.getenv('SQLPass'),os.getenv('DATABASE'))
     
     def load_cogs(self,client):
         for cog in [file.split('.')[0] for file in os.listdir("cogs") if file.endswith('.py')]:
@@ -26,6 +30,9 @@ class Client(commands.Bot):
         print("Bot is ready!")
                 
     async def on_message(self, msg):
+        #increment msg count
+        
+
         # always have this in on_message or commands won't work
         await self.process_commands(msg)    
 
