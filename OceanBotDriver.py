@@ -93,7 +93,7 @@ class Client(commands.Bot):
             embed.add_field(name = f"Command '{context.message.content}'' does not exist.", value = 'Use the !help command to see available commands.')
             await context.send(embed = embed)
         else:
-            raise exception
+            return super().on_command_error(context, exception)
 
     async def on_message(self, msg):
         if msg.author.bot:

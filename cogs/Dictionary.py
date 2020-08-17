@@ -56,9 +56,9 @@ class Dictionary(commands.Cog):
         )
         embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
         if msg:
-            wordData = self.udic.define(msg) #Only save top result
-            if wordData:
-                wordData = wordData[0]
+            wordData = self.udic.define(msg) #returns multiple definitions
+            if wordData and wordData is not None:
+                wordData = wordData[0] #Only use top result
                 embed.set_author(name = 'Urban Dictionary:')
                 embed.add_field(name = wordData.word,
                                 value = util.truncateEmbedValue(wordData.meaning),
@@ -67,7 +67,7 @@ class Dictionary(commands.Cog):
                                     value = util.truncateEmbedValue(wordData.example),
                                     inline = False)
             else:
-                embed.set_author(name = f'No definition found for \"{self.udic.word}\"')      
+                embed.set_author(name = f'No definition found for \"{msg}\"')      
         else:
             embed.add_field(name = 'Command misuse', 
                             value = f'Please add a word after \"{cmd}\"')
