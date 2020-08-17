@@ -7,14 +7,29 @@ import time
 import asyncio
 from customPackages import dbManager as db
 from mysql.connector import errors as SQLError
+from enum import Enum
+
+
+class dbState(Enum):
+    INITIALIZING = 1
+    RECONNECTING = 2
+    UPDATING = 3
+    FREE = 4
+
 
 class Client(commands.Bot):
     def __init__(self,command_prefix,help_command):
         super().__init__(command_prefix, help_command)
 
+
+        #manage messages while database is initializing and counting past messages (can take some time)
+        self.dbState = dbState.FREE
+        self.msgBuffer = []
+
         #connect to database
         self.dbManager = db.dbManager(os.getenv('SQLHost'),os.getenv('SQLUser'),os.getenv('SQLPass'),os.getenv('DATABASE'))
     
+
     def load_cogs(self,client):
         for cog in [file.split('.')[0] for file in os.listdir("cogs") if file.endswith('.py')]:
             try:
@@ -48,27 +63,43 @@ class Client(commands.Bot):
     async def on_message(self, msg):
         if msg.author.bot:
             return
-        
-        #increment msg count or initialize the database if the table/row doesn't exist
-        try:
-            await self.dbManager.updateDB(msg)
-        except (SQLError.ProgrammingError, TypeError) as e:
-            try:
-                print("Initializing database first.")
-                await self.dbManager.init_table(msg)
-                await self.dbManager.init_rows(msg)
 
-        # Would like a more elegant solution here if possible.
-        # Don't like pasting this code for the same exception just different code.
+        #increment msg count or initialize the database if the table/row doesn't exist
+        if self.dbState == dbState.FREE:
+            try:
+                self.dbState = dbState.UPDATING
+                await self.dbManager.updateDB(msg)
+            except (SQLError.ProgrammingError, TypeError) as e:
+                try:
+                    self.dbState = dbState.INITIALIZING
+                    print("Initializing database first.")
+                    await self.dbManager.init_table(msg)
+                    await self.dbManager.init_rows(msg)
+
+            # Would like a more elegant solution here if possible.
+            # Don't like pasting this code for the same exception just different code.
+                except SQLError.OperationalError as e:
+                    self.dbState = dbState.RECONNECTING
+                    print('Reconnecting to database')
+                    self.dbManager = db.dbManager(os.getenv('SQLHost'),os.getenv('SQLUser'),os.getenv('SQLPass'),os.getenv('DATABASE'))
             except SQLError.OperationalError as e:
+                self.dbState = dbState.RECONNECTING
                 print('Reconnecting to database')
                 self.dbManager = db.dbManager(os.getenv('SQLHost'),os.getenv('SQLUser'),os.getenv('SQLPass'),os.getenv('DATABASE'))
-        except SQLError.OperationalError as e:
-            print('Reconnecting to database')
-            self.dbManager = db.dbManager(os.getenv('SQLHost'),os.getenv('SQLUser'),os.getenv('SQLPass'),os.getenv('DATABASE'))
-        
+        else:
+            self.msgBuffer.append(msg)
+            return
+
+        self.dbState = dbState.FREE
+
         # always have this in on_message or commands won't work
         await self.process_commands(msg)
+
+        # process any commands requested while database code was busy
+        if self.msgBuffer:
+            for _ in range(len(self.msgBuffer)):
+                print([m.content for m in self.msgBuffer])
+                await self.process_commands(self.msgBuffer.pop(0))
 
 
 if __name__ == "__main__":
