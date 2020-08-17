@@ -31,8 +31,7 @@ class dbManager():
             tableSet.add(t[f'Tables_in_{self.schema}'])
         return(tableSet)
 
-    async def init_table(self,ctx):
-        guild = ctx.guild
+    async def init_table(self):
         myCursor = self.database.cursor(dictionary = True)
         try:
             myCursor.execute(
@@ -48,8 +47,7 @@ class dbManager():
                 count+=1
         return count
 
-    async def init_rows(self,ctx):
-        guild = ctx.guild
+    async def init_Server(self,guild):
         channels = guild.text_channels
         
         myCursor = self.database.cursor(dictionary = True)
@@ -83,7 +81,7 @@ class dbManager():
             return t[0]['Channel MsgCount']
         else:
             print("Initializing rows.")
-            await self.init_rows(ctx)
+            await self.init_Server(ctx.guild)
             await self.get_channelMsgCount(ctx)
 
     async def updateDB(self,ctx,change = 1):
@@ -126,23 +124,3 @@ class dbManager():
             f"WHERE `Server ID` = {guild.id} "
         )
         self.database.commit()
-
-    async def addServer(self,guild):
-        channels = guild.text_channels
-    
-        myCursor = self.database.cursor(dictionary = True)
-
-        #safety check to no add duplicate channels
-        myCursor.execute(
-        f"SELECT * FROM `{self.msgCountTableName}` "
-        f"WHERE `Server ID` = {guild.id} "
-        )
-        curGuildDict = myCursor.fetchall()
-        chanIDs = [row['Channel ID'] for row in curGuildDict] #slow when we start talking about large amounts of servers
-        
-        for chan in channels:
-            if str(chan.id) not in chanIDs:
-                msgCount = await self.countMsgs(chan)
-                self.addChannel(chan,msgCount)
-                
-        self.database.commit() 

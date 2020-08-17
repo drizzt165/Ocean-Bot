@@ -20,7 +20,7 @@ class dbState(Enum):
 class Client(commands.Bot):
     def __init__(self,command_prefix,help_command):
         super().__init__(command_prefix, help_command)
-
+        self.EmbedColour = discord.Colour.blurple()
 
         #manage messages while database is initializing and counting past messages (can take some time)
         self.dbState = dbState.FREE
@@ -46,10 +46,37 @@ class Client(commands.Bot):
         print("Bot is ready!")
 
     async def on_guild_remove(self,guild):
-        await self.dbManager.removeServer(guild)
+        try:
+            await self.dbManager.removeServer(guild)
+        except SQLError.ProgrammingError as e:
+            pass
 
     async def on_guild_join(self,guild):
-        await self.dbManager.addServer(guild)
+        embed = discord.Embed(colour = self.EmbedColour)
+        embed.add_field(name = 'Initializing Bot resources: ', value =  'This may take a few minutes depending on server size and age, please wait...')
+
+        tempMsg = await guild.text_channels[0].send(embed = embed)
+        try:
+            self.dbState = dbState.INITIALIZING
+            await self.dbManager.init_Server(guild)
+        except SQLError.ProgrammingError as e:
+            self.dbState = dbState.INITIALIZING
+            await self.dbManager.init_table()
+            await self.dbManager.init_Server(guild)
+        except SQLError.OperationalError as e:
+            self.dbState = dbState.RECONNECTING
+            print('Reconnecting to database')
+            self.dbManager = db.dbManager(os.getenv('SQLHost'),os.getenv('SQLUser'),os.getenv('SQLPass'),os.getenv('DATABASE'))
+            try:
+                self.dbState = dbState.INITIALIZING
+                await self.dbManager.init_Server(guild)
+            except SQLError.ProgrammingError as e:
+                self.dbState = dbState.INITIALIZING
+                await self.dbManager.init_table()
+                await self.dbManager.init_Server(guild)
+
+        self.dbState = dbState.FREE
+        await tempMsg.delete()
 
     async def on_guild_channel_delete(self,channel):
         self.dbManager.removeChannel(channel)
@@ -62,8 +89,8 @@ class Client(commands.Bot):
 
     async def on_command_error(self, context, exception):
         if isinstance(exception, commands.CommandNotFound):
-            embed = discord.Embed(colour = discord.Color.blurple())
-            embed.add_field(name = f"Command does not exist.", value = context.message.content)
+            embed = discord.Embed(colour = self.EmbedColour)
+            embed.add_field(name = f"Command '{context.message.content}'' does not exist.", value = 'Use the !help command to see available commands.')
             await context.send(embed = embed)
         else:
             raise exception
@@ -81,8 +108,8 @@ class Client(commands.Bot):
                     try:
                         self.dbState = dbState.INITIALIZING
                         print("Initializing database first.")
-                        await self.dbManager.init_table(msg)
-                        await self.dbManager.init_rows(msg)
+                        await self.dbManager.init_table()
+                        await self.dbManager.init_Server(msg.guild)
 
                 # Would like a more elegant solution here if possible.
                 # Don't like pasting this code for the same exception just different code.
