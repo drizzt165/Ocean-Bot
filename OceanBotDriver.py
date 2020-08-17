@@ -126,15 +126,13 @@ class Client(commands.Bot):
 
         self.dbState = dbState.FREE
 
-        async with msg.channel.typing():
-            # always have this in on_message or commands won't work
-            await self.process_commands(msg)
+        # always have this in on_message or commands won't work
+        await self.process_commands(msg)
 
         # process any commands requested while database code was busy
         if self.msgBuffer:
             for _ in range(len(self.msgBuffer)):
-                async with msg.channel.typing():
-                    await self.process_commands(self.msgBuffer.pop(0))
+                await self.process_commands(self.msgBuffer.pop(0))
 
 if __name__ == "__main__":
     client = Client(command_prefix = os.getenv('PREFIX'),
