@@ -99,41 +99,41 @@ class Client(commands.Bot):
         if msg.author.bot:
             return
             
-        async with msg.channel.typing():
-            #increment msg count or initialize the database if the table/row doesn't exist
-            if self.dbState == dbState.FREE:
-                try:
+        #increment msg count or initialize the database if the table/row doesn't exist
+        if self.dbState == dbState.FREE:
+            try:
                     self.dbState = dbState.UPDATING
                     await self.dbManager.updateDB(msg)
-                except (SQLError.ProgrammingError, TypeError) as e:
-                    try:
-                        self.dbState = dbState.INITIALIZING
-                        print("Initializing database first.")
-                        await self.dbManager.init_table()
-                        await self.dbManager.init_Server(msg.guild)
-
-                # Would like a more elegant solution here if possible.
-                # Don't like pasting this code for the same exception just different code.
-                    except SQLError.OperationalError as e:
-                        self.dbState = dbState.RECONNECTING
-                        print('Reconnecting to database')
-                        self.dbManager = db.dbManager(os.getenv('SQLHost'),os.getenv('SQLUser'),os.getenv('SQLPass'),os.getenv('DATABASE'))
+            except (SQLError.ProgrammingError, TypeError) as e:
+                try:
+                    self.dbState = dbState.INITIALIZING
+                    print("Initializing database first.")
+                    await self.dbManager.init_table()
+                    await self.dbManager.init_Server(msg.guild)
+            # Would like a more elegant solution here if possible.
+            # Don't like pasting this code for the same exception just different code.
                 except SQLError.OperationalError as e:
                     self.dbState = dbState.RECONNECTING
                     print('Reconnecting to database')
                     self.dbManager = db.dbManager(os.getenv('SQLHost'),os.getenv('SQLUser'),os.getenv('SQLPass'),os.getenv('DATABASE'))
-            else:
-                self.msgBuffer.append(msg)
-                return
+            except SQLError.OperationalError as e:
+                self.dbState = dbState.RECONNECTING
+                print('Reconnecting to database')
+                self.dbManager = db.dbManager(os.getenv('SQLHost'),os.getenv('SQLUser'),os.getenv('SQLPass'),os.getenv('DATABASE'))
+        else:
+            self.msgBuffer.append(msg)
+            return
 
-            self.dbState = dbState.FREE
+        self.dbState = dbState.FREE
 
+        async with msg.channel.typing():
             # always have this in on_message or commands won't work
             await self.process_commands(msg)
 
-            # process any commands requested while database code was busy
-            if self.msgBuffer:
-                for _ in range(len(self.msgBuffer)):
+        # process any commands requested while database code was busy
+        if self.msgBuffer:
+            for _ in range(len(self.msgBuffer)):
+                async with msg.channel.typing():
                     await self.process_commands(self.msgBuffer.pop(0))
 
 if __name__ == "__main__":
