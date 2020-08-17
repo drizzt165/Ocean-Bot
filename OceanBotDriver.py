@@ -60,47 +60,53 @@ class Client(commands.Bot):
     async def on_message_delete(self,msg):
         await self.dbManager.updateDB(msg,-1)
 
+    async def on_command_error(self, context, exception):
+        if isinstance(exception, commands.CommandNotFound):
+            embed = discord.Embed(colour = discord.Color.blurple())
+            embed.add_field(name = f"Command does not exist.", value = context.message.content)
+            await context.send(embed = embed)
+        else:
+            raise exception
+
     async def on_message(self, msg):
         if msg.author.bot:
             return
-
-        #increment msg count or initialize the database if the table/row doesn't exist
-        if self.dbState == dbState.FREE:
-            try:
-                self.dbState = dbState.UPDATING
-                await self.dbManager.updateDB(msg)
-            except (SQLError.ProgrammingError, TypeError) as e:
+        async with msg.channel.typing():
+            #increment msg count or initialize the database if the table/row doesn't exist
+            if self.dbState == dbState.FREE:
                 try:
-                    self.dbState = dbState.INITIALIZING
-                    print("Initializing database first.")
-                    await self.dbManager.init_table(msg)
-                    await self.dbManager.init_rows(msg)
+                    self.dbState = dbState.UPDATING
+                    await self.dbManager.updateDB(msg)
+                except (SQLError.ProgrammingError, TypeError) as e:
+                    try:
+                        self.dbState = dbState.INITIALIZING
+                        print("Initializing database first.")
+                        await self.dbManager.init_table(msg)
+                        await self.dbManager.init_rows(msg)
 
-            # Would like a more elegant solution here if possible.
-            # Don't like pasting this code for the same exception just different code.
+                # Would like a more elegant solution here if possible.
+                # Don't like pasting this code for the same exception just different code.
+                    except SQLError.OperationalError as e:
+                        self.dbState = dbState.RECONNECTING
+                        print('Reconnecting to database')
+                        self.dbManager = db.dbManager(os.getenv('SQLHost'),os.getenv('SQLUser'),os.getenv('SQLPass'),os.getenv('DATABASE'))
                 except SQLError.OperationalError as e:
                     self.dbState = dbState.RECONNECTING
                     print('Reconnecting to database')
                     self.dbManager = db.dbManager(os.getenv('SQLHost'),os.getenv('SQLUser'),os.getenv('SQLPass'),os.getenv('DATABASE'))
-            except SQLError.OperationalError as e:
-                self.dbState = dbState.RECONNECTING
-                print('Reconnecting to database')
-                self.dbManager = db.dbManager(os.getenv('SQLHost'),os.getenv('SQLUser'),os.getenv('SQLPass'),os.getenv('DATABASE'))
-        else:
-            self.msgBuffer.append(msg)
-            return
+            else:
+                self.msgBuffer.append(msg)
+                return
 
-        self.dbState = dbState.FREE
+            self.dbState = dbState.FREE
 
-        # always have this in on_message or commands won't work
-        await self.process_commands(msg)
+            # always have this in on_message or commands won't work
+            await self.process_commands(msg)
 
-        # process any commands requested while database code was busy
-        if self.msgBuffer:
-            for _ in range(len(self.msgBuffer)):
-                print([m.content for m in self.msgBuffer])
-                await self.process_commands(self.msgBuffer.pop(0))
-
+            # process any commands requested while database code was busy
+            if self.msgBuffer:
+                for _ in range(len(self.msgBuffer)):
+                    await self.process_commands(self.msgBuffer.pop(0))
 
 if __name__ == "__main__":
     client = Client(command_prefix = os.getenv('PREFIX'),
