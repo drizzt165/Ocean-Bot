@@ -42,7 +42,7 @@ class Client(commands.Bot):
         print("Loading cogs...")
         self.load_cogs(self)
         await client.change_presence(status=discord.Status.online,
-                                  activity=discord.Activity(type=discord.ActivityType.watching, name="for !help"))
+                                  activity=discord.Activity(type=discord.ActivityType.watching, name=f"for {os.getenv('PREFIX')}help"))
         print("Bot is ready!")
 
     async def on_guild_remove(self,guild):
@@ -98,6 +98,7 @@ class Client(commands.Bot):
     async def on_message(self, msg):
         if msg.author.bot:
             return
+            
         async with msg.channel.typing():
             #increment msg count or initialize the database if the table/row doesn't exist
             if self.dbState == dbState.FREE:
