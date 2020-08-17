@@ -1,18 +1,18 @@
+import dotenv
 import discord
+from datetime import datetime
 from discord.ext import commands
-from discord.ext.commands import has_permissions, Cog
-import datetime
-
 
 class Admin(commands.Cog):
     """Commands only available to admin users."""
-    @has_permissions(administrator = True)
     def __init__(self,client):
         self.client = client
         self.EmbedColour = discord.Colour.red()
+        self.dbManager = self.client.dbManager
 
     #Check permissions
     async def cog_check(self, ctx):
+        #And all permissions required together.
         validUser = ctx.author.guild_permissions.administrator
         if not validUser:
             embed = discord.Embed(colour = self.EmbedColour)
@@ -24,7 +24,7 @@ class Admin(commands.Cog):
             await ctx.send(embed = embed)
         
         return validUser
-
+    
 def setup(client):
     print("Setting up Admin Cog...")
     client.add_cog(Admin(client))
