@@ -165,6 +165,15 @@ class General(commands.Cog):
         await ctx.message.delete()
         await ctx.send(file = titleIcon, embed = embed)
 
+    @commands.command(name = 'inviteLink',
+                      pass_context = True,
+                      description = "DM invite bot link.")
+    async def inviteLink(self,ctx):
+        inviteURL = 'https://discord.com/api/oauth2/authorize?client_id=731385353021292564&permissions=8&scope=bot'
+        inviteMsg = f"Join the Ocean-Bot family here:\n{inviteURL}"
+        await ctx.message.delete()
+        await ctx.author.send(inviteMsg)
+
     @commands.command(name = 'say',
                       pass_context = True,
                       description = "Have the bot say something.",
