@@ -22,7 +22,7 @@ class Client(commands.Bot):
         print("Loading cogs...")
         self.load_cogs(self)
         await client.change_presence(status=discord.Status.online,
-                                  activity=discord.Activity(type=discord.ActivityType.watching, name="for !help"))
+                                  activity=discord.Activity(type=discord.ActivityType.watching, name=f"for {self.command_prefix}help"))
         print("Bot is ready!")
                 
     async def on_message(self, msg):

@@ -31,7 +31,7 @@ class General(commands.Cog):
 
         if not msg: #print default help window
             embed.add_field(name = 'Ocean-Bot Commands',
-                            value = '!help <command> to get additional information for specific command.')
+                            value = f'{self.client.command_prefix}help <command> to get additional information for specific command.')
             for key,cog in cogDict.items():
                 cogCmds = cog.get_commands()
                 if cogCmds:
@@ -50,7 +50,7 @@ class General(commands.Cog):
             
         elif msg.lower() in commandNames: #print specific command data
             msgCmd = commands[commandNames.index(msg.lower())]
-            embed.set_author(name = f'!{msgCmd} Command')
+            embed.set_author(name = f'{self.client.command_prefix}{msgCmd} command')
             if msgCmd.description:
                 embed.add_field(name = 'Description: ', value = msgCmd.description, inline = False)
             if msgCmd.brief:
