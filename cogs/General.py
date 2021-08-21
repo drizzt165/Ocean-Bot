@@ -118,13 +118,15 @@ class General(commands.Cog):
         
         voiceChanCnt = len(guild.voice_channels)
         txtChanCnt = len(guild.text_channels)
-        onlineMembers = 0
+        totalMembers = onlineMembers = 0
         for m in guild.members:
-            if m.status == discord.Status.online:
-                onlineMembers += 1
+            if not m.bot:
+                totalMembers+=1
+                if m.status == discord.Status.online:
+                    onlineMembers += 1
                 
         embed.add_field(name = f":speech_balloon: Channels: {voiceChanCnt+txtChanCnt}", value = f"{voiceChanCnt} Voice | {txtChanCnt} Text", inline = True)
-        embed.add_field(name = f":busts_in_silhouette: Members ({guild.member_count}): ", value = f"{onlineMembers} Online",inline = True)
+        embed.add_field(name = f":busts_in_silhouette: Members ({totalMembers}): ", value = f"{onlineMembers} Online",inline = True)
         embed.add_field(name = f':earth_africa: Region: ', value = guild.region)
         
         await ctx.message.delete()
@@ -135,19 +137,20 @@ class General(commands.Cog):
                        description = "Output amount of users.")
     async def userstatus(self,ctx):
         guild = ctx.author.guild
-        totalMembers = guild.member_count
-        onlineMembers = offlineMembers = idleMembers = dndMembers=0
+        totalMembers = onlineMembers = offlineMembers = idleMembers = dndMembers=0
 
         for mem in guild.members:
             memStatus = mem.status
-            if memStatus == discord.Status.online:
-                onlineMembers+=1
-            elif memStatus == discord.Status.offline:
-                offlineMembers+=1
-            elif memStatus == discord.Status.idle:
-                idleMembers += 1
-            elif memStatus == discord.Status.dnd:
-                dndMembers += 1
+            if not mem.bot:
+                totalMembers+=1
+                if memStatus == discord.Status.online:
+                    onlineMembers+=1
+                elif memStatus == discord.Status.offline:
+                    offlineMembers+=1
+                elif memStatus == discord.Status.idle:
+                    idleMembers += 1
+                elif memStatus == discord.Status.dnd:
+                    dndMembers += 1
         
         embed = discord.Embed(
             colour = self.EmbedColour

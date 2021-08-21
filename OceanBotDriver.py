@@ -7,8 +7,8 @@ import time
 import asyncio
 
 class Client(commands.Bot):
-    def __init__(self,command_prefix,help_command):
-        super().__init__(command_prefix, help_command)
+    def __init__(self,command_prefix,help_command,intents):
+        super().__init__(command_prefix, help_command, intents = intents)
     
     def load_cogs(self,client):
         for cog in [file.split('.')[0] for file in os.listdir("cogs") if file.endswith('.py')]:
@@ -30,6 +30,8 @@ class Client(commands.Bot):
         await self.process_commands(msg)    
 
 if __name__ == "__main__":
+    intents = discord.Intents.all()
     client = Client(command_prefix = os.getenv('PREFIX'),
-                    help_command=None)
+                    help_command=None,
+                    intents = intents)
     client.run(os.getenv('TOKEN'))
