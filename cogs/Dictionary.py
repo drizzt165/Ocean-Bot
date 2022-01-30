@@ -33,7 +33,7 @@ class Dictionary(commands.Cog):
         embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
         
         wotd = self.udic.WOTD()
-        embed.set_author(name = f'Urban Dictionary: {wotd.ribbon}')
+        embed.set_author(name = f'Urban Dictionary: Word of the Day')
         embed.add_field(name = wotd.word,
                         value = util.truncateEmbedValue(wotd.meaning), 
                         inline = False)

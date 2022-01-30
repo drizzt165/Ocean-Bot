@@ -2,11 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 
 class WordBlock:
-    def __init__(self,word,meaning,example,ribbon = None):
+    def __init__(self,word,meaning,example):
         self.word = word
         self.meaning = meaning
         self.example = example
-        self.ribbon = ribbon
     
 class UrbanDic:
     def __init__(self):
@@ -25,16 +24,15 @@ class UrbanDic:
             print(f"Error finding '{word}' on Urban Dictionary")
             return None
         
-        wordBlocks = soup.find_all(class_='def-panel')
+        wordBlocks = soup.find_all(class_='definition')
         
         words = []
         meanings = []
         examples = []
         for block in wordBlocks:
-            if 'word of the day' not in block.find(class_ = 'ribbon').get_text().lower(): #remove word of the day from meaning list
-                words.append(block.find(class_ = 'word').get_text())
-                meanings.append(block.find(class_ = 'meaning').get_text()) 
-                examples.append(block.find(class_ = 'example').get_text())
+            words.append(block.find(class_ = 'word').get_text())
+            meanings.append(block.find(class_ = 'meaning').get_text()) 
+            examples.append(block.find(class_ = 'example').get_text())
 
         
         wordBlocks = []
@@ -51,13 +49,12 @@ class UrbanDic:
         except Exception:
             print(f'Error finding Word of the Day')
         
-        wotdBlock = soup.find(class_='def-panel')
+        wotdBlock = soup.find(class_='definition')
         
         word = wotdBlock.find(class_ = 'word').get_text()
         meaning = wotdBlock.find(class_ = 'meaning').get_text()
         example = wotdBlock.find(class_ = 'example').get_text()
-        ribbon = wotdBlock.find(class_ = 'ribbon').get_text()
         
-        return WordBlock(word,meaning,example,ribbon)
+        return WordBlock(word,meaning,example)
         
              
