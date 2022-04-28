@@ -14,6 +14,3 @@ If using a virtual environment, the make sure to select the desired interpreter.
 
 ### When installing new modules for development:
 Run `python -m pip freeze > requirements.txt` to update the module requirements.
-
-### Same Virtual Environment on multiple devices
-Under `OceanBot_env/pyvenv.cfg`, change the `home` variable to the root of your python install.
