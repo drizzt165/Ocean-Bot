@@ -1,13 +1,14 @@
 import disnake as discord
 from disnake.ext import commands
 
+
 class Unofficial(commands.Cog):
     """Commands used for purposes relating directly to the Ocean Peoples Guild"""
     def __init__(self,client):
         self.client = client
         self.EmbedColour = discord.Colour.dark_gold()
 
-    @commands.command(name = 'albiononline',
+    @commands.slash_command(name = 'albiononline',
                   pass_context = True,
                   description = 'Albion online copy-pasta.',
                   brief = '!albiononline simply outputs a copy pasta curated by <@102159759158804480>')
@@ -40,10 +41,9 @@ class Unofficial(commands.Cog):
                         value = f'Join <@102159759158804480> at {steamURL}',
                         inline = False)
 
-        await ctx.message.delete()
         await ctx.send(embed = embed, file = albIcon)
         
-    @commands.command(name='oceanman',
+    @commands.slash_command(name='oceanman',
                        pass_context = True,
                        description = "Listen to the song of our people.")
     async def oceanman(self, ctx):

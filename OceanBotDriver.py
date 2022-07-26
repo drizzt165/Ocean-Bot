@@ -1,11 +1,8 @@
-from operator import truediv
 import os
-import sys
-import dotenv
+
 import disnake as discord
 from disnake.ext import commands
-import time
-import asyncio
+
 
 class Client(commands.Bot):
     def __init__(self,command_prefix,help_command,intents):
@@ -23,7 +20,7 @@ class Client(commands.Bot):
         print("Loading cogs...")
         self.load_cogs(self)
         await client.change_presence(status=discord.Status.online,
-                                  activity=discord.Activity(type=discord.ActivityType.watching, name=f"for {self.command_prefix}help"))
+                                  activity=discord.Activity(type=discord.ActivityType.watching, name=f"for /help"))
         print("Bot is ready!")
                 
     async def on_message(self, msg):
@@ -32,7 +29,7 @@ class Client(commands.Bot):
 
 if __name__ == "__main__":
     intents = discord.Intents.all()
-    client = Client(command_prefix = os.getenv('PREFIX'),
+    client = Client(command_prefix = None,
                     help_command=None,
                     intents = intents)
     client.run(os.getenv('TOKEN'))

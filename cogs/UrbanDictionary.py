@@ -1,7 +1,8 @@
 import disnake as discord
-from disnake.ext import commands
-from customPackages.urbandict import UrbanDic
 from customPackages import utilityFunctions as util
+from customPackages.urbandict import UrbanDic
+from disnake.ext import commands
+
 
 class UrbanDictionary(commands.Cog):
     """Dictionary commands to expand your knowledge on slang and language in general."""
@@ -10,7 +11,7 @@ class UrbanDictionary(commands.Cog):
         self.EmbedColour = discord.Colour.green()
         self.udic = UrbanDic()
     
-    @commands.command(name = 'ud_wotd',
+    @commands.slash_command(name = 'ud_wotd',
                       description = 'Print the word of the day for Urban Dictionary!',
                       pass_context = True,
                       brief = "!ud_wotd <noArgs>")
@@ -29,22 +30,20 @@ class UrbanDictionary(commands.Cog):
                         value = util.truncateEmbedValue(wotd.example),
                         inline = False)
         
-        await ctx.message.delete()
         await ctx.send(embed = embed)
     
-    @commands.command(name = 'udefine',
+    @commands.slash_command(name = 'udefine',
                       description = "Urban Dictionary of a given word.",
                       pass_context = True,
                       brief = "!def <word>",
                       aliases = ['udef'])
-    async def udefine(self,ctx,*,msg=None):
-        cmd = ctx.message.content.split()[0]
+    async def udefine(self,ctx,*,word=None):
         embed = discord.Embed(
             colour = self.EmbedColour
         )
         embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.display_avatar)
-        if msg:
-            wordData = self.udic.define(msg) #Only save top result
+        if word:
+            wordData = self.udic.define(word) #Only save top result
             if wordData:
                 wordData = wordData[0]
                 embed.set_author(name = 'Urban Dictionary:')
@@ -58,9 +57,8 @@ class UrbanDictionary(commands.Cog):
                 embed.set_author(name = f'No definition found for \"{self.udic.word}\"')
         else:
             embed.add_field(name = 'Command misuse',
-                            value = f'Please add a word after \"{cmd}\"')
+                            value = f'Please add a word after \"/udefine\"')
         
-        await ctx.message.delete()
         await ctx.send(embed = embed)
 
 def setup(client):
