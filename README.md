@@ -19,3 +19,6 @@ If using a virtual environment, then make sure to select the desired interpreter
 
 ### When installing new modules for development:
 Run `python -m pip install pipreqs` to install pipreqs. Then run `pipreqs ./ --ignore ./OceanBot_env --force` to update the requirements.txt
+
+### Formatting
+Run `python -m pip install autopep8` to install formatter used

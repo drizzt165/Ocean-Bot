@@ -20,8 +20,6 @@ class General(commands.Cog):
         embed = discord.Embed(
             colour=self.EmbedColour
         )
-        embed.set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.display_avatar)
 
         cogDict = {}
         # ensure that all cog keys are capitalized
@@ -92,8 +90,6 @@ class General(commands.Cog):
         embed.set_author(name=f"{target}",
                          icon_url="attachment://User.png")
         embed.set_thumbnail(url=target.display_avatar)
-        embed.set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.display_avatar)
         embed.add_field(name='Joined Discord',
                         value=f"{joinDiscDate}\n{joinDiscDiff}", inline=True)
         embed.add_field(name='Joined Server',
@@ -107,8 +103,6 @@ class General(commands.Cog):
                             pass_context=True)
     async def server(self, ctx):
         embed = discord.Embed(colour=self.EmbedColour)
-        embed.set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.display_avatar)
         guild = ctx.message.guild
 
         embed.set_author(name=guild.name)
@@ -172,8 +166,6 @@ class General(commands.Cog):
 
         embed.set_author(name=f"Current member status ({totalMembers})",
                          icon_url="attachment://Community.png")
-        embed.set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.display_avatar)
         embed.add_field(name='Online:', value=onlineMembers, inline=True)
         embed.set_image(url="attachment://OnlineIcon.png")
         embed.add_field(name='Offline:', value=offlineMembers, inline=True)

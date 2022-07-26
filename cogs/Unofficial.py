@@ -33,8 +33,6 @@ class Unofficial(commands.Cog):
         steamURL = "https://store.steampowered.com/app/761890/Albion_Online/"
         albIcon = discord.File("Images/Albion.png", filename="Albion.png")
 
-        embed.set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.display_avatar)
         embed.set_thumbnail(url='attachment://Albion.png')
         embed.add_field(name='Albion Online: ',
                         value=copyPasta,

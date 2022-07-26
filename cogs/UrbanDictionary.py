@@ -20,8 +20,6 @@ class UrbanDictionary(commands.Cog):
         embed = discord.Embed(
             colour=self.EmbedColour
         )
-        embed.set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.display_avatar)
 
         wotd = self.udic.WOTD()
         embed.set_author(name=f'Urban Dictionary: Word of the Day')
@@ -43,8 +41,7 @@ class UrbanDictionary(commands.Cog):
         embed = discord.Embed(
             colour=self.EmbedColour
         )
-        embed.set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.display_avatar)
+
         if word:
             wordData = self.udic.define(word)  # Only save top result
             if wordData:
