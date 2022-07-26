@@ -1,12 +1,12 @@
-import discord
-from discord.ext import commands
+import disnake as discord
+from disnake.ext import commands
 
 class Unofficial(commands.Cog):
     """Commands used for purposes relating directly to the Ocean Peoples Guild"""
     def __init__(self,client):
         self.client = client
         self.EmbedColour = discord.Colour.dark_gold()
-        
+
     @commands.command(name = 'albiononline',
                   pass_context = True,
                   description = 'Albion online copy-pasta.',
@@ -30,14 +30,14 @@ class Unofficial(commands.Cog):
                 "that you get more experience and loot"
         steamURL = "https://store.steampowered.com/app/761890/Albion_Online/"
         albIcon = discord.File("Images/Albion.png",filename = "Albion.png")
-        
-        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
+
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.display_avatar)
         embed.set_thumbnail(url = 'attachment://Albion.png')
-        embed.add_field(name = 'Albion Online: ', 
-                        value = copyPasta, 
+        embed.add_field(name = 'Albion Online: ',
+                        value = copyPasta,
                         inline = False)
-        embed.add_field(name = 'Start your adventure TODAY!', 
-                        value = f'Join <@102159759158804480> at {steamURL}', 
+        embed.add_field(name = 'Start your adventure TODAY!',
+                        value = f'Join <@102159759158804480> at {steamURL}',
                         inline = False)
 
         await ctx.message.delete()
@@ -48,8 +48,7 @@ class Unofficial(commands.Cog):
                        description = "Listen to the song of our people.")
     async def oceanman(self, ctx):
         await ctx.send(f"{ctx.author.mention} BIG POG! \nhttps://www.youtube.com/watch?v=6E5m_XtCX3c")
-    
+
 def setup(client):
     print("Setting up Unofficial Cog...")
     client.add_cog(Unofficial(client))
-    

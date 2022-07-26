@@ -1,8 +1,9 @@
+from operator import truediv
 import os
 import sys
 import dotenv
-import discord
-from discord.ext import commands
+import disnake as discord
+from disnake.ext import commands
 import time
 import asyncio
 

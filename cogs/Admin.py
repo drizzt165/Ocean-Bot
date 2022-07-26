@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake as discord
+from disnake.ext import commands
 
 class Admin(commands.Cog):
     """Commands only available to admin users."""

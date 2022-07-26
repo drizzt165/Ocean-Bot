@@ -1,9 +1,7 @@
-import discord
-from discord.ext import commands
-from datetime import datetime
+import disnake as discord
+from disnake.ext import commands
+from datetime import datetime,timezone
 import customPackages.utilityFunctions as util
-import math
-
 
 class General(commands.Cog):
     """General use commands for available to all users."""
@@ -18,7 +16,7 @@ class General(commands.Cog):
         embed = discord.Embed(
             colour = self.EmbedColour
         )
-        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.display_avatar)
         
         
         cogDict = {}
@@ -85,8 +83,8 @@ class General(commands.Cog):
         
         embed.set_author(name=f"{target}", 
                          icon_url = "attachment://User.png")
-        embed.set_thumbnail(url = target.avatar_url)
-        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
+        embed.set_thumbnail(url = target.display_avatar)
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.display_avatar)
         embed.add_field(name = 'Joined Discord', value = f"{joinDiscDate}\n{joinDiscDiff}",inline = True)
         embed.add_field(name = 'Joined Server', value = f"{joinServDate}\n{joinServDiff}",inline = True)
         embed.add_field(name = 'Mention ID: ', value = target.id,inline = False)
@@ -99,16 +97,18 @@ class General(commands.Cog):
                        pass_context = True)
     async def server(self,ctx):
         embed = discord.Embed(colour = self.EmbedColour)
-        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.display_avatar)
         guild = ctx.message.guild
         
         embed.set_author(name = guild.name)
-        embed.set_thumbnail(url = guild.icon_url)
+        embed.set_thumbnail(url = guild.icon)
         embed.add_field(name = ':id: Server ID: ', value = guild.id,inline = True)
         
         creationDate = guild.created_at.date()
         creationTime = guild.created_at.time().strftime("%I:%M %p")
-        days = (datetime.now()-guild.created_at).days
+        currentTime = datetime.now()
+        currentTime = currentTime.replace(tzinfo=timezone.utc)
+        days = (currentTime-guild.created_at).days
 
         dateString = f"{creationDate} {creationTime}\n"
         dateString+=util.format_YY_MM_DD(days)
@@ -127,7 +127,6 @@ class General(commands.Cog):
                 
         embed.add_field(name = f":speech_balloon: Channels: {voiceChanCnt+txtChanCnt}", value = f"{voiceChanCnt} Voice | {txtChanCnt} Text", inline = True)
         embed.add_field(name = f":busts_in_silhouette: Members ({totalMembers}): ", value = f"{onlineMembers} Online",inline = True)
-        embed.add_field(name = f':earth_africa: Region: ', value = guild.region)
         
         await ctx.message.delete()
         await ctx.send(embed = embed)
@@ -159,7 +158,7 @@ class General(commands.Cog):
         
         embed.set_author(name = f"Current member status ({totalMembers})",
                           icon_url = "attachment://Community.png")
-        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.display_avatar)
         embed.add_field(name = 'Online:', value = onlineMembers,inline= True)
         embed.set_image(url="attachment://OnlineIcon.png")
         embed.add_field(name = 'Offline:', value = offlineMembers,inline = True)

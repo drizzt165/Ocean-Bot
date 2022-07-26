@@ -1,7 +1,5 @@
-import sys
-import os
-import discord
-from discord.ext import commands
+import disnake as discord
+from disnake.ext import commands
 from customPackages.urbandict import UrbanDic
 from customPackages import utilityFunctions as util
 
@@ -20,16 +18,16 @@ class UrbanDictionary(commands.Cog):
         embed = discord.Embed(
             colour = self.EmbedColour
         )
-        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.display_avatar)
         
         wotd = self.udic.WOTD()
         embed.set_author(name = f'Urban Dictionary: Word of the Day')
         embed.add_field(name = wotd.word,
-                        value = util.truncateEmbedValue(wotd.meaning), 
+                        value = util.truncateEmbedValue(wotd.meaning),
                         inline = False)
         embed.add_field(name = "Example:",
-                        value = util.truncateEmbedValue(wotd.example), 
-                        inline = False)        
+                        value = util.truncateEmbedValue(wotd.example),
+                        inline = False)
         
         await ctx.message.delete()
         await ctx.send(embed = embed)
@@ -44,7 +42,7 @@ class UrbanDictionary(commands.Cog):
         embed = discord.Embed(
             colour = self.EmbedColour
         )
-        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.avatar_url)
+        embed.set_footer(text= f"Requested by {ctx.author}",icon_url= ctx.author.display_avatar)
         if msg:
             wordData = self.udic.define(msg) #Only save top result
             if wordData:
@@ -57,9 +55,9 @@ class UrbanDictionary(commands.Cog):
                                     value = util.truncateEmbedValue(wordData.example),
                                     inline = False)
             else:
-                embed.set_author(name = f'No definition found for \"{self.udic.word}\"')      
+                embed.set_author(name = f'No definition found for \"{self.udic.word}\"')
         else:
-            embed.add_field(name = 'Command misuse', 
+            embed.add_field(name = 'Command misuse',
                             value = f'Please add a word after \"{cmd}\"')
         
         await ctx.message.delete()
@@ -68,4 +66,3 @@ class UrbanDictionary(commands.Cog):
 def setup(client):
     print("Setting up Dictionary Cog...")
     client.add_cog(UrbanDictionary(client))
-    
