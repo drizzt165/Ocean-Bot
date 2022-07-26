@@ -8,9 +8,14 @@ Change the name of ".env_sample" to ".env" and fill in your data for each field.
 MUST have a bot TOKEN and PREFIX for bot to operate.
 
 ## Setting up environment
+
+### Setup script
+Run the `./scripts/Setup.bat` or `./scripts/Setup.py` files. This will create a virutal environment under the same directory.
+
+### Manually
 Run `python -m venv OceanBot_env` to create a virtual environment if you wish in a desired directory.
 Then run `python -m pip install -r requirements.txt` from Ocean-Bot/requirements.txt to download all modules.
-If using a virtual environment, the make sure to select the desired interpreter.
+If using a virtual environment, then make sure to select the desired interpreter.
 
 ### When installing new modules for development:
-Run `python -m pip freeze > requirements.txt` to update the module requirements.
+Run `python -m pip install pipreqs` to install pipreqs. Then run `pipreqs ./ --ignore ./OceanBot_env --force` to update the requirements.txt
