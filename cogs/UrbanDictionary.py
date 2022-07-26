@@ -37,7 +37,7 @@ class UrbanDictionary(commands.Cog):
                       pass_context = True,
                       brief = "!def <word>",
                       aliases = ['udef'])
-    async def udefine(self,ctx,*,word=None):
+    async def udefine(self,ctx,*,word):
         embed = discord.Embed(
             colour = self.EmbedColour
         )
@@ -55,9 +55,6 @@ class UrbanDictionary(commands.Cog):
                                     inline = False)
             else:
                 embed.set_author(name = f'No definition found for \"{self.udic.word}\"')
-        else:
-            embed.add_field(name = 'Command misuse',
-                            value = f'Please add a word after \"/udefine\"')
         
         await ctx.send(embed = embed)
 

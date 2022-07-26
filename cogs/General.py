@@ -174,14 +174,6 @@ class General(commands.Cog):
 
         await ctx.author.send(inviteMsg)
 
-    @commands.slash_command(name = 'say',
-                      pass_context = True,
-                      description = "Have the bot say something.",
-                      aliases=["announce"],
-                      brief = "!say <content to echo>")
-    async def say(self,ctx,*,msg):
-        await ctx.send(msg)
-
 def setup(client):
     print("Setting up General Cog...")
     client.add_cog(General(client))
