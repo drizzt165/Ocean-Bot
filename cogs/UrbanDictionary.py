@@ -14,8 +14,7 @@ class UrbanDictionary(commands.Cog):
 
     @commands.slash_command(name='ud_wotd',
                             description='Print the word of the day for Urban Dictionary!',
-                            pass_context=True,
-                            brief="!ud_wotd <noArgs>")
+                            pass_context=True)
     async def ud_wotd(self, ctx):
         embed = discord.Embed(
             colour=self.EmbedColour
@@ -34,9 +33,7 @@ class UrbanDictionary(commands.Cog):
 
     @commands.slash_command(name='udefine',
                             description="Urban Dictionary of a given word.",
-                            pass_context=True,
-                            brief="!def <word>",
-                            aliases=['udef'])
+                            pass_context=True)
     async def udefine(self, ctx, *, word):
         embed = discord.Embed(
             colour=self.EmbedColour

@@ -11,8 +11,7 @@ class Unofficial(commands.Cog):
 
     @commands.slash_command(name='albiononline',
                             pass_context=True,
-                            description='Albion online copy-pasta.',
-                            brief='!albiononline simply outputs a copy pasta curated by <@102159759158804480>')
+                            description='Albion online copy-pasta curated by <@102159759158804480>')
     async def albiononline(self, ctx):
         embed = discord.Embed(
             colour=self.EmbedColour

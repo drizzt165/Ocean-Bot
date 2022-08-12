@@ -57,9 +57,6 @@ class General(commands.Cog):
             if msgCmd.description:
                 embed.add_field(name='Description: ',
                                 value=msgCmd.description, inline=False)
-            if msgCmd.brief:
-                embed.add_field(name='Example: ',
-                                value=msgCmd.brief, inline=False)
         else:
             embed.set_author(name=f'No command or category named "{command}"')
 
@@ -67,8 +64,7 @@ class General(commands.Cog):
 
     @commands.slash_command(name='user',
                             pass_context=True,
-                            description="Output stats of mentioned member.",
-                            brief="!user @<member>")
+                            description="Output stats of mentioned member.")
     async def user(self, ctx, user: discord.User = None):
         if user:
             target = user
