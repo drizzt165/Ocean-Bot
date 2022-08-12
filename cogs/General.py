@@ -69,9 +69,9 @@ class General(commands.Cog):
                             pass_context=True,
                             description="Output stats of mentioned member.",
                             brief="!user @<member>")
-    async def user(self, ctx, user=None):
+    async def user(self, ctx, user: discord.User = None):
         if user:
-            target = ctx.message.mentions[0]
+            target = user
         else:
             target = ctx.author
 
