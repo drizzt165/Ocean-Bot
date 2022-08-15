@@ -99,7 +99,7 @@ class General(commands.Cog):
                             pass_context=True)
     async def server(self, ctx):
         embed = discord.Embed(colour=self.EmbedColour)
-        guild = ctx.message.guild
+        guild = ctx.guild
 
         embed.set_author(name=guild.name)
         embed.set_thumbnail(url=guild.icon)
