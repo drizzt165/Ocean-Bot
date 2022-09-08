@@ -25,7 +25,8 @@ class UrbanDictionary(commands.Cog):
         embed.add_field(name=wotd.word,
                         value=util.truncateEmbedValue(wotd.meaning),
                         inline=False)
-        embed.add_field(name="Example:",
+        if(wotd.example):
+            embed.add_field(name="Example:",
                         value=util.truncateEmbedValue(wotd.example),
                         inline=False)
 

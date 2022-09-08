@@ -8,6 +8,8 @@ class WordBlock:
         self.meaning = meaning
         self.example = example
 
+    def __repr__(self):
+        return f'Word:{self.word}\nMeaning:{self.meaning}\nExample:{self.example}'
 
 class UrbanDic:
     def __init__(self):
@@ -52,8 +54,8 @@ class UrbanDic:
 
         wotdBlock = soup.find(class_='definition')
 
-        word = wotdBlock.find(class_='word').get_text()
-        meaning = wotdBlock.find(class_='meaning').get_text()
-        example = wotdBlock.find(class_='example').get_text()
+        word = wotdBlock.find(class_='word').get_text() or None
+        meaning = wotdBlock.find(class_='meaning').get_text() or None
+        example = wotdBlock.find(class_='example').get_text() or None
 
         return WordBlock(word, meaning, example)
