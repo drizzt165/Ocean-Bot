@@ -3,6 +3,9 @@ import os
 import disnake as discord
 from disnake.ext import commands
 
+# Load .env files
+from dotenv import load_dotenv
+load_dotenv()
 
 class Client(commands.Bot):
     def __init__(self, command_prefix, help_command, intents):
